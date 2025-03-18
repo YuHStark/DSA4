@@ -71,7 +71,6 @@ function handleClusteringDiversification(agent) {
 // NLP Features handler
 function handleNLPFeatures(agent) {
   agent.add('NLP techniques improve content-based recommendations by converting book descriptions into structured representations, such as TF-IDF vectors or word embeddings.');
-  agent.add('Would you like to learn more about text embeddings or topic modeling?');
   agent.add('Is there anything else you\'d like to know about book recommendation systems?');
 }
 
