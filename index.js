@@ -37,20 +37,20 @@ app.post('/webhook', express.json(), (req, res) => {
     agent.add(new Suggestion('Content-based'));
     agent.add(new Suggestion('Rating-based'));
     agent.add(new Suggestion('Clustering-based'));
-    agent.add('Is there anything else you\'d like to know about book recommendation systems?');
+    addFollowUpQuestion(agent);
   }
 
   // Content-Based Filtering handler
   function handleContentBasedFiltering(agent) {
     agent.add('Content-based filtering identifies similar books by analyzing their features, such as descriptions, genres, or word embeddings.');
-    agent.add('Is there anything else you\'d like to know about book recommendation systems?');
+    addFollowUpQuestion(agent);
   }
   
   function handleSimilarityMetrics(agent) {
   agent.context.set('discussing_similarity', 5);
   agent.add('Content-based filtering uses similarity metrics like cosine similarity and Jaccard similarity to compare books.');
   agent.add('Cosine similarity measures the angle between book feature vectors, while Jaccard similarity compares the overlap of features.');
-  agent.add('Is there anything else you\'d like to know about book recommendation systems?');
+  addFollowUpQuestion(agent);
 }
 
 
@@ -58,28 +58,36 @@ app.post('/webhook', express.json(), (req, res) => {
 function handleWeightedRatingCalculation(agent) {
   agent.add('Rating-based filtering computes a weighted rating using both the book\'s average rating and the number of reviews it has received.');
   agent.add('The formula is: WeightedRating = (average_rating × rating_count) / (rating_count + 10)');
-  agent.add('Is there anything else you\'d like to know about book recommendation systems?');
+  addFollowUpQuestion(agent);
 }
 
 // Clustering handler
 function handleClusteringDiversification(agent) {
-  agent.add('Clustering-based recommendation groups similar books using algorithms like K-Mean, Hierarchical clustering, and Gaussian Mixture Model (GMM).');
-  agent.add('This helps readers explore a wider range of titles by suggesting books from different but related clusters.');
-  agent.add('Is there anything else you\'d like to know about book recommendation systems?');
+  
+  addFollowUpQuestion(agent);
 }
 
 // NLP Features handler
 function handleNLPFeatures(agent) {
-  agent.add('NLP techniques improve content-based recommendations by converting book descriptions into structured representations, such as TF-IDF vectors or word embeddings.');
-  agent.add('Is there anything else you\'d like to know about book recommendation systems?');
+  addFollowUpQuestion(agent);
 }
 
 // Evaluation metrics handler
 function handleEvaluationMetrics(agent) {
-  agent.add('Book recommendation systems are evaluated using metrics like Precision & Recall, F1 Score, Mean Average Precision (MAP), and Mean Reciprocal Rank (MRR).');
-  agent.add('Is there anything else you\'d like to know about book recommendation systems?');
+  addFollowUpQuestion(agent);
 }
+  
+function handleNoMoreQuestions(agent) {
+    agent.add("Thank you for chatting with our Book Recommendation System bot! I hope you found the information helpful.");
+    agent.add("If you have any feedback about this conversation or suggestions for improvement, please let us know.");
+    agent.add("Have a great day!");
+  }
 
+function addFollowUpQuestion(agent) {
+    agent.add('Is there anything else you\'d like to know about book recommendation systems?');
+    agent.add(new Suggestion('Yes'));
+    agent.add(new Suggestion('No'));
+  }
 
 
   // Map intents to handlers
@@ -92,8 +100,9 @@ function handleEvaluationMetrics(agent) {
   intentMap.set('CQ4_ClusteringDiversification', handleClusteringDiversification);
   intentMap.set('CQ5_NLPFeaturesForContent', handleNLPFeatures);
   intentMap.set('CQ6_EvaluationMetrics', handleEvaluationMetrics);
-  
+  intentMap.set('No More Questions', handleNoMoreQuestions);
   agent.handleRequest(intentMap);
+
 });
 
 const PORT = process.env.PORT || 8080;
